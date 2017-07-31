@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------
 |  Author: Luis Dominguez - LADBSoft.com                          |
-|  Date: 25/07/2017                                 Version: 1.0b |
+|  Date: 31/07/2017                                 Version: 1.1b |
 |-----------------------------------------------------------------|
 |  Name: FireBuino!                                               |
 |  Description: Remake of the classic Game&Watch Fire, from 1980. |
@@ -550,8 +550,10 @@ void loop() {
         }
 
         //Get faster with more score
-        if(score <= (14 * 50)) {
-          moveTick = 3 + (14 - (score / 50));
+        if(score <= (15 * 50)) {
+          moveTick = 2 + (15 - (score / 50));
+        } else {
+          moveTick = 2;
         }
 
         //Try to spawn a new survivor
@@ -566,15 +568,15 @@ void loop() {
             //Search for a blank spot in the array
             for(int i = 0; i < 10; i++) {
               if(survivors[i] == NULL) { //found!
-                if(score <= 100) {
+                if(score <= 300) {
                   //Only Third floor
                   survivors[i] = new Survivor(0, random(1,5));
-                } else if(score <= 300) {
+                } else if(score <= 600) {
                   //Third or second floor
-                  survivors[i] = new Survivor(random(0,1), random(1,5));
+                  survivors[i] = new Survivor(random(0,2), random(1,5));
                 } else {
                   //Any floor
-                  survivors[i] = new Survivor(random(0,2), random(1,5));
+                  survivors[i] = new Survivor(random(0,3), random(1,5));
                 }
                 noOfSurvivors++;
                 spawnDelay = 2;
