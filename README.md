@@ -1,6 +1,6 @@
 # Firebuino!
 
-![FireBuino!](http://gamebuino.com/forum/download/file.php?id=1308)
+![FireBuino!](https://github.com/ladbsoft/makerbuino-firebuino/raw/master/img/MainMenuScreenx4.png)
 
 A remake of the old Fire! Game&amp;Watch for the gamebuino/makerbuino console
 
@@ -11,7 +11,7 @@ Port from the classic "Fire!" Game&Watch console from 1980. There is fire in a b
 
 ### Gameplay
 
-![Gameplay](http://gamebuino.com/forum/download/file.php?id=1309)
+![Gameplay](https://github.com/ladbsoft/makerbuino-firebuino/raw/master/img/Gameplay.gif)
 
 You move two people holding a stretcher, and your mission is to save as many people as possible. Every time you get a survivor to bounce on the stretcher, you get a point, and every time one reaches the ambulance, you get 10 points. One three people hit the ground, you lose. As time goes by, speed is increased, so is difficulty. Get as many points as possible.
 
