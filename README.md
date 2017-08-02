@@ -38,6 +38,7 @@ These instructions will get you a copy of the game up and running in your GameBu
 ## Authors
 
 * **Luis Alejandro Domínguez Bueno** - *Initial work* - [LADBSoft](https://github.com/LADBSoft)
+* **Erico Patricio Monteiro** - New graphics designer
 
 See also the list of [contributors](https://github.com/LADBSoft/makerbuino-firebuino/contributors) who participated in this project.
 
