@@ -1,19 +1,21 @@
-/*----------------------------------------------------------------
-  |  Author: Luis Dominguez - LADBSoft.com                          |
-  |  Date: 31/07/2017                                 Version: 1.3b |
-  |-----------------------------------------------------------------|
-  |  Name: FireBuino!                                               |
-  |  Description: Remake of the classic Game&Watch Fire, from 1980. |
-  |-----------------------------------------------------------------|
-  |   C H A N G E L O G                                              |
-  |  ===================                                             |
-  |  1.0b: Basic functionality.                                      |
-  |  1.1b: Bug corrections and speed tweaking.                       |
-  |  1.2b: Added new graphics by Erico Patricio Monteiro. Added      |
-  |        main menu and pause screen.                               |
-  |  1.3b: Added 5-slot highscore ranking. Survivor spawning         |
-  |        tweaked. Minor enhancements.
-  |----------------------------------------------------------------*/
+/*-----------------------------------------------------------------
+|  Author: Luis Dominguez - LADBSoft.com                          |
+|  Date: 31/07/2017                                 Version: 1.4b |
+|-----------------------------------------------------------------|
+|  Name: FireBuino!                                               |
+|  Description: Remake of the classic Game&Watch Fire, from 1980. |
+|-----------------------------------------------------------------|
+|   C H A N G E L O G                                             |
+|  ===================                                            |
+|  1.0b: Basic functionality.                                     |
+|  1.1b: Bug corrections and speed tweaking.                      |
+|  1.2b: Added new graphics by Erico Patricio Monteiro. Added     |
+|        main menu and pause screen.                              |
+|  1.3b: Added 5-slot highscore ranking. Survivor spawning        |
+|        tweaked. Minor enhancements.                             |
+|  1.4b: Finally solved the bug that made no more survivors to    |
+         spawn! Remember, freeing memory is good :P               |
+|----------------------------------------------------------------*/
 
 #include <Gamebuino.h>
 #include <EEPROM.h>
@@ -50,7 +52,6 @@ class Survivor {
 #define HIGHSCORE_COUNT 5
 #define NAME_LETTERS 10
 
-#define DEBUG 0
 byte survivorCount;
 
 Gamebuino gb;
@@ -63,7 +64,6 @@ short playerPosition;
 short moveTick;
 short spawnDelay;
 short noOfSurvivors;
-short randNo;
 boolean isClassic;
 byte gameState;
 Survivor *survivors[10]; //max. 10 survivors at the same time
@@ -121,6 +121,7 @@ void initGame() {
   spawnDelay = 2;
   isClassic = false;
   for (int i = 0; i < 10; i++) {
+    delete(survivors[i]);
     survivors[i] = NULL;
   }
   survivors[0] = new Survivor(0, 3);
@@ -311,10 +312,6 @@ void spawnSurvivor() {
     mustSpawn = random(0, 2);
   }
 
-  if (DEBUG == 1) {
-    randNo = mustSpawn;
-  }
-
   //Spawn if zero
   if (mustSpawn == 0) {
     //Search for a blank spot in the array
@@ -382,10 +379,6 @@ void gameLogic() {
       moveTick = 4;
     }
 
-    if (DEBUG == 1) {
-      moveTick = 4;
-    }
-
     //Try to spawn a new survivor
     if (spawnDelay <= 0) {
       spawnSurvivor();
@@ -398,6 +391,7 @@ void moveSurvivors() {
     if (survivors[i] != NULL) {
       //If dead, remove
       if (survivors[i]->_dead) {
+        delete(survivors[i]);
         survivors[i] = NULL;
         noOfSurvivors--;
         continue;
@@ -431,9 +425,7 @@ void moveSurvivors() {
         } else {
           survivors[i]->_dead = true;
           gb.sound.playCancel();
-          if (DEBUG != 1) {
-            lives--;
-          }
+          lives--;
           if (lives <= 0) {
             gameState = STATE_GAMEOVER;
           }
@@ -443,6 +435,7 @@ void moveSurvivors() {
 
       //Got to the ambulance
       if (survivors[i]->_step >= survivorNumberOfSteps) {
+        delete(survivors[i]);
         survivors[i] = NULL;
         noOfSurvivors--;
         score += 10;
@@ -683,44 +676,6 @@ void drawCredits() {
   gb.display.print("\x17: Back");
 }
 
-void drawDebug() {
-  byte posX;
-
-  if (DEBUG == 1) {
-    gb.display.setColor(WHITE);
-    gb.display.fillRect(0, 0, 84, 5);
-    gb.display.setColor(BLACK);
-
-    for (int i = 0; i < 10; i++) {
-      gb.display.cursorX = posX;
-      gb.display.cursorY = 0;
-      if (survivors[i] == NULL) {
-        gb.display.print("0");
-      } else {
-        gb.display.print("1");
-      }
-
-      posX += 5;
-    }
-
-    gb.display.cursorX = 54;
-    gb.display.cursorY = 0;
-    gb.display.print(survivorCount);
-
-    gb.display.cursorX = 70;
-    gb.display.cursorY = 0;
-    gb.display.print(randNo);
-
-    gb.display.cursorX = 75;
-    gb.display.cursorY = 0;
-    gb.display.print(spawnDelay);
-
-    gb.display.cursorX = 80;
-    gb.display.cursorY = 0;
-    gb.display.print(noOfSurvivors);
-  }
-}
-
 void setup() {
   gb.begin();
   titleScreen();
@@ -761,10 +716,6 @@ void loop() {
 
         //Draw the player
         drawPlayer();
-
-        if (DEBUG == 1) {
-          drawDebug();
-        }
 
         if (gameState == STATE_PAUSED) {
           drawPaused();
